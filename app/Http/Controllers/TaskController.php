@@ -12,15 +12,20 @@ class TaskController extends Controller
     {
         return view('tasks.index');
     }
-    // Fetch tasks for AJAX (with search and pagination)
+    // Fetch tasks
     public function fetchTasks(Request $request)
     {
         $query = Task::query();
+
         if ($request->has('search') && $request->search !== '') {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
-        $tasks = $query->orderBy('created_at', 'desc')->paginate(5);
-        return response()->json(['tasks' => $tasks]);
+
+        $tasks = $query->orderByDesc('created_at')->paginate(5);
+
+        return response()->json([
+            'tasks' => $tasks
+        ]);
     }
     // Store a new task
     public function store(Request $request)
